@@ -4,10 +4,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
+
 public class ApiFastFoodManagerApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(ApiFastFoodManagerApplication.class, args);
+        System.out.println("🚀 FastFood Manager API is running successfully!");
+
     }
 
 }
