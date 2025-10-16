@@ -22,4 +22,15 @@ public class MenuItemController {
     public List<MenuItem> getAllMenuItems() {
         return menuItemService.getAllMenuItems();
     }
+
+    // 🆕 Sắp xếp danh sách món ăn theo tên hoặc giá
+    // http://localhost:8080/api/menuitems/sort
+    // Giảm GET http://localhost:8080/api/menuitems/sort?field=price&order=desc
+    // Tăng GET http://localhost:8080/api/menuitems/sort?field=name&order=asc
+    @GetMapping("/sort")
+    public List<MenuItem> getSortedMenuItems(
+            @RequestParam(defaultValue = "name") String field,
+            @RequestParam(defaultValue = "asc") String order) {
+        return menuItemService.getSortedMenuItems(field, order);
+    }
 }
