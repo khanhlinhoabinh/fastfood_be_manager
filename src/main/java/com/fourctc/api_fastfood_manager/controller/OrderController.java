@@ -5,6 +5,7 @@ import com.fourctc.api_fastfood_manager.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.fourctc.api_fastfood_manager.dto.OrderDTO;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
@@ -16,10 +17,17 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    // OrderController.java
+    // Chức năng lấy danh sách
     @GetMapping
-
     public List<OrderDTO> getAllOrders() {
         return orderService.getAllOrders(); // Trả về danh sách DTO thay vì entity
     }
+
+
+    @GetMapping("/sort")
+    public List<OrderDTO> getAllOrders(@RequestParam(defaultValue = "orderDate") String sortBy,
+                                       @RequestParam(defaultValue = "asc") String direction) {
+        return orderService.getAllOrders(sortBy, direction);
+    }
+
 }
