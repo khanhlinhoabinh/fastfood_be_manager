@@ -20,4 +20,16 @@ public class OrderDetailController {
     public List<OrderDetailDTO> getAllOrderDetails() {
         return orderDetailService.getAllOrderDetails();
     }
+
+    // 🟢 API thêm chi tiết đơn hàng mới
+    @PostMapping
+    public OrderDetailDTO addOrderDetail(@RequestBody OrderDetailDTO orderDetailDTO) {
+        return orderDetailService.addOrderDetail(orderDetailDTO);
+    }
+
+    // 🟡 API cập nhật chi tiết đơn hàng
+    @PutMapping("/{id}")
+    public OrderDetailDTO updateOrderDetail(@PathVariable Integer id, @RequestBody OrderDetailDTO dto) {
+        return orderDetailService.updateOrderDetail(id, dto);
+    }
 }
