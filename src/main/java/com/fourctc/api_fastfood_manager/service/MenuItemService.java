@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
+import java.util.Optional;
+
 @Service
 public class MenuItemService {
     @Autowired
@@ -30,5 +32,20 @@ public class MenuItemService {
             sort = sort.ascending();
         }
         return menuItemRepository.findAll(sort);
+    }
+
+    /**
+     * 🆕 Xoá món ăn theo ID
+     *
+     * @param id ID của món ăn cần xoá
+     * @return true nếu xoá thành công, false nếu không tìm thấy
+     */
+    public boolean deleteMenuItemById(Integer id) {
+        Optional<MenuItem> item = menuItemRepository.findById(id);
+        if (item.isPresent()) {
+            menuItemRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }

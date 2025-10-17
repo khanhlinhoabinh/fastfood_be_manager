@@ -38,6 +38,7 @@ public class CustomerController {
             @RequestParam(required = false) String sortBy,
             @RequestParam(required = false) String order) {
         return customerService.getSortedCustomers(sortBy, order);
-        
+
     }
 }
+
