@@ -23,6 +23,20 @@ public class CustomerController {
     public List<Customer> getAllCustomers() {
         return customerService.getAllCustomers();
     }
-
-
+    /**
+     * ✅ API 2: Lấy danh sách khách hàng có sắp xếp
+     * URL: GET /api/customers/sort?sortBy=name&order=asc
+     * - sortBy: name hoặc loyaltyPoints
+     * - order: asc hoặc desc
+     *
+     * Ví dụ:
+     *  🔹 /api/customers/sort?sortBy=name&order=asc
+     *  🔹 /api/customers/sort?sortBy=loyaltyPoints&order=desc
+     */
+    @GetMapping("/sort")
+    public List<Customer> getSortedCustomers(
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String order) {
+        return customerService.getSortedCustomers(sortBy, order);
+    }
 }
