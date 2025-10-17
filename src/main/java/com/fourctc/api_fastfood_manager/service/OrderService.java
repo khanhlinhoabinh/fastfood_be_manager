@@ -13,22 +13,8 @@ public class OrderService {
     @Autowired
     private OrderRepository orderRepository;
 
+    // OrderService.java
     public List<Order> getAllOrders() {
-        return orderRepository.findAll();
-    }
-
-    public Order getOrderById(Integer id) {
-        return orderRepository.findById(id).orElse(null);
-    }
-
-    public Order saveOrder(Order order) {
-        // tự động set thời gian đặt hàng nếu null
-        if (order.getOrderDate() == null)
-            order.setOrderDate(java.time.LocalDateTime.now());
-        return orderRepository.save(order);
-    }
-
-    public void deleteOrder(Integer id) {
-        orderRepository.deleteById(id);
+        return orderRepository.findAll();  // Lấy tất cả đơn hàng từ DB, sẽ tự động bao gồm cả orderDetails nếu đã được ánh xạ đúng
     }
 }

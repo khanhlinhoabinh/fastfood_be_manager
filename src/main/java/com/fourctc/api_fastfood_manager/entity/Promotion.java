@@ -4,15 +4,24 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.Set;
 @Entity
-@Table(name = "Promotion")
+@Table(name = "promotion") // Bảng promotion
 public class Promotion {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "promotionid") // Cột promotionid
     private Integer promotionID;
 
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "type")
     private String type;
+
+    @Column(name = "discountpercent")
     private Double discountPercent;
+
+    @Column(name = "expirydate")
     private LocalDate expiryDate;
 
     @ManyToMany(mappedBy = "promotions")

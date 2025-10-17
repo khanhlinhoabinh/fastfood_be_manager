@@ -1,40 +1,51 @@
-package com.fourctc.api_fastfood_manager.entity;
+import jakarta.persistence.Embeddable;
 import java.io.Serializable;
-import java.util.Objects;
-public class MenuItemPromotionId implements Serializable {
-    private Integer menuItemID;
-    private Integer promotionID;
 
-    // Default constructor
+@Embeddable
+public class MenuItemPromotionId implements Serializable {
+
+    private Integer menuitemid;
+    private Integer promotionid;
+
+    // Constructors, getters, setters, equals, hashCode
     public MenuItemPromotionId() {}
 
-    // Constructor đầy đủ
-    public MenuItemPromotionId(Integer menuItemID, Integer promotionID) {
-        this.menuItemID = menuItemID;
-        this.promotionID = promotionID;
+    public MenuItemPromotionId(Integer menuitemid, Integer promotionid) {
+        this.menuitemid = menuitemid;
+        this.promotionid = promotionid;
     }
 
-    // Getters & Setters
-    public Integer getMenuItemID() { return menuItemID; }
-    public void setMenuItemID(Integer menuItemID) { this.menuItemID = menuItemID; }
+    public Integer getMenuitemid() {
+        return menuitemid;
+    }
 
-    public Integer getPromotionID() { return promotionID; }
-    public void setPromotionID(Integer promotionID) { this.promotionID = promotionID; }
+    public void setMenuitemid(Integer menuitemid) {
+        this.menuitemid = menuitemid;
+    }
 
-    // Bắt buộc phải override equals() và hashCode() để JPA so sánh khóa đúng
+    public Integer getPromotionid() {
+        return promotionid;
+    }
+
+    public void setPromotionid(Integer promotionid) {
+        this.promotionid = promotionid;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof MenuItemPromotionId)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
         MenuItemPromotionId that = (MenuItemPromotionId) o;
-        return Objects.equals(menuItemID, that.menuItemID) &&
-                Objects.equals(promotionID, that.promotionID);
+
+        if (!menuitemid.equals(that.menuitemid)) return false;
+        return promotionid.equals(that.promotionid);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(menuItemID, promotionID);
+        int result = menuitemid.hashCode();
+        result = 31 * result + promotionid.hashCode();
+        return result;
     }
 }
-
-

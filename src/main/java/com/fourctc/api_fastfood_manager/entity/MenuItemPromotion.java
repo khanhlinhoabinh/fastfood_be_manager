@@ -1,14 +1,21 @@
-package com.fourctc.api_fastfood_manager.entity;
-import jakarta.persistence.*;
-import java.io.Serializable;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+
 @Entity
-@Table(name = "MenuItemPromotion")
-@IdClass(MenuItemPromotionId.class)
-public class MenuItemPromotion implements Serializable {
+@Table(name = "menu_item_promotion")
+public class MenuItemPromotion {
 
-    @Id
-    private Integer menuItemID;
+    @EmbeddedId
+    private MenuItemPromotionId id;
 
-    @Id
-    private Integer promotionID;
+    // Getters and Setters
+    public MenuItemPromotionId getId() {
+        return id;
+    }
+
+    public void setId(MenuItemPromotionId id) {
+        this.id = id;
+    }
 }

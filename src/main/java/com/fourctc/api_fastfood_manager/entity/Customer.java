@@ -1,22 +1,35 @@
 package com.fourctc.api_fastfood_manager.entity;
 import jakarta.persistence.*;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
-@Table(name = "Customer")
+@Table(name = "customer") // Bảng customer
 public class Customer {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "customerid") // Cột customerid
     private Integer customerID;
 
-    @Column(nullable = false)
+    @Column(name = "name")
     private String name;
 
+    @Column(name = "phone")
     private String phone;
+
+    @Column(name = "email")
     private String email;
+
+    @Column(name = "loyaltypoints")
     private Integer loyaltyPoints;
+
+    @Column(name = "membertype")
     private String memberType;
 
+
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @JsonIgnore // ✅ tránh đệ quy
     private List<Order> orders;
 
     public Integer getCustomerID() {

@@ -1,42 +1,55 @@
 package com.fourctc.api_fastfood_manager.entity;
+
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
-@Table(name = "`Order`")
+@Table(name = "`order`") // Bảng order
 public class Order {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "orderid") // Cột orderid
     private Integer orderID;
 
     @ManyToOne
-    @JoinColumn(name = "CustomerID", nullable = false)
+    @JoinColumn(name = "customerid", nullable = false) // Cột customerid
     private Customer customer;
 
     @ManyToOne
-    @JoinColumn(name = "StaffID")
+    @JoinColumn(name = "staffid") // Cột staffid
     private Staff staff;
 
+    @Column(name = "orderdate")
     private LocalDateTime orderDate;
+
+    @Column(name = "totalamount")
     private Double totalAmount;
+
+    @Column(name = "status")
     private String status;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<OrderDetail> orderDetails;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Payment> payments;
 
     @ManyToMany
     @JoinTable(
-            name = "OrderPromotion",
-            joinColumns = @JoinColumn(name = "OrderID"),
-            inverseJoinColumns = @JoinColumn(name = "PromotionID")
+            name = "order_promotion", // Bảng order_promotion
+            joinColumns = @JoinColumn(name = "orderid"),
+            inverseJoinColumns = @JoinColumn(name = "promotionid")
     )
+    @JsonIgnore
     private Set<Promotion> promotions;
 
-    public Integer getOrderID() {
+public Integer getOrderID() {
         return orderID;
     }
 

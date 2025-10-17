@@ -3,13 +3,16 @@ package com.fourctc.api_fastfood_manager.entity;
 import jakarta.persistence.*;
 import java.io.Serializable;
 @Entity
-@Table(name = "OrderPromotion")
-@IdClass(OrderPromotionId.class)
-public class OrderPromotion implements Serializable {
+@Table(name = "order_promotion") // Bảng order_promotion
+public class OrderPromotion {
 
     @Id
-    private Integer orderID;
+    @ManyToOne
+    @JoinColumn(name = "orderid", referencedColumnName = "orderid")
+    private Order order;
 
     @Id
-    private Integer promotionID;
+    @ManyToOne
+    @JoinColumn(name = "promotionid", referencedColumnName = "promotionid")
+    private Promotion promotion;
 }

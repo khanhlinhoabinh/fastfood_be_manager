@@ -1,23 +1,33 @@
 package com.fourctc.api_fastfood_manager.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 @Entity
-@Table(name = "Payment")
+@Table(name = "payment") // Bảng payment
 public class Payment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "paymentid") // Cột paymentid
     private Integer paymentID;
 
     @ManyToOne
-    @JoinColumn(name = "OrderID", nullable = false)
+    @JoinColumn(name = "orderid", nullable = false) // Cột orderid
     private Order order;
 
+    @Column(name = "method")
     private String method;
+
+    @Column(name = "amount")
     private Double amount;
+
+    @Column(name = "changeamount")
     private Double changeAmount;
+
+    @Column(name = "paymentdate")
     private LocalDateTime paymentDate;
+
 
     public Integer getPaymentID() {
         return paymentID;

@@ -3,26 +3,33 @@ package com.fourctc.api_fastfood_manager.entity;
 import jakarta.persistence.*;
 import java.util.Set;
 @Entity
-@Table(name = "MenuItem")
+@Table(name = "menu_item") // Bảng menu_item
 public class MenuItem {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "menuitemid") // Cột menuitemid
     private Integer menuItemID;
 
+    @Column(name = "image")
     private String image;
 
-    @Column(nullable = false)
+    @Column(name = "name")
     private String name;
 
+    @Column(name = "category")
     private String category;
 
-    @Column(nullable = false)
+    @Column(name = "price")
     private Double price;
 
+    @Column(name = "description")
     private String description;
 
+    @Column(name = "stockquantity")
     private Integer stockQuantity;
 
+    @Column(name = "preptime")
     private Integer prepTime;
 
     // Liên kết ManyToMany với Promotion

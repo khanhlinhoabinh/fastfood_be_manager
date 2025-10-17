@@ -1,22 +1,31 @@
 package com.fourctc.api_fastfood_manager.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.List;
 @Entity
-@Table(name = "Staff")
+@Table(name = "staff") // Bảng staff
 public class Staff {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "staffid") // Cột staffid
     private Integer staffID;
 
-    @Column(nullable = false)
+    @Column(name = "name")
     private String name;
 
+    @Column(name = "position")
     private String position;
+
+    @Column(name = "shift")
     private String shift;
+
+    @Column(name = "salary")
     private Double salary;
 
     @OneToMany(mappedBy = "staff")
+    @JsonIgnore // ✅ tránh lặp khi serialize JSON
     private List<Order> orders;
 
     public Integer getStaffID() {
