@@ -10,10 +10,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // tắt CSRF để test dễ hơn
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll() // cho phép truy cập tất cả endpoint
-                );
+                        .anyRequest().permitAll()
+                )
+                .formLogin(form -> form.disable())   // tắt form login
+                .httpBasic(basic -> basic.disable()); // tắt Basic Auth
         return http.build();
     }
 }
