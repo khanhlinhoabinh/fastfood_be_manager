@@ -7,10 +7,8 @@ public class OrderDTO {
     private Integer orderID;
     private Integer customerID;
     private Integer staffID;
-
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime orderDate;
-
     private Double totalAmount;
     private String status;
 

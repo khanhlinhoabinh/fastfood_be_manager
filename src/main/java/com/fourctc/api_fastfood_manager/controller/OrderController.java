@@ -40,7 +40,7 @@ public class OrderController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
-        }
+
     // 🟢 Thêm đơn hàng
     @PostMapping
     public ResponseEntity<OrderDTO> addOrder(@RequestBody OrderDTO orderDTO) {
@@ -68,16 +68,19 @@ public class OrderController {
             @RequestParam(defaultValue = "asc") String direction) {
         return orderService.getAllOrders(sortBy, direction);
     }
+
     @GetMapping("/search")
-    public List<Order> searchOrders(
+    public List<OrderDTO> searchOrders(
             @RequestParam Integer customerID,
             @RequestParam String startDate,
             @RequestParam String endDate,
-            @RequestParam String status
-    ) {
+            @RequestParam String status) {
+
         LocalDateTime start = LocalDateTime.parse(startDate);
         LocalDateTime end = LocalDateTime.parse(endDate);
+
+        // Gọi phương thức searchOrders và trả về OrderDTO thay vì Order
         return orderService.searchOrders(customerID, start, end, status);
     }
-}
+
 }

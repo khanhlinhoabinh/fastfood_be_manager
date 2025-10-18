@@ -12,29 +12,22 @@ import com.fourctc.api_fastfood_manager.dto.OrderDTO;
 import com.fourctc.api_fastfood_manager.mapper.OrderMapper;
 import java.util.List;
 import java.util.Optional;
-import com.fourctc.api_fastfood_manager.dto.OrderDTO;
-import com.fourctc.api_fastfood_manager.mapper.OrderMapper;
 import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
 
     @Autowired
-    private OrderRepository orderRepository;
+    private OrderRepository orderRepository;  // Inject OrderRepository vào đây
 
     @Autowired
     private CustomerRepository customerRepository; // để map customerID sang entity
 
-    // 🟢 Lấy tất cả đơn hàng
     //Lấy danh sách đơn hàng
     public List<OrderDTO> getAllOrders() {
         return orderRepository.findAll()
@@ -43,7 +36,6 @@ public class OrderService {
                 .collect(Collectors.toList());
     }
 
-    // 🟢 Thêm đơn hàng mới
     // 🟢 Feature 5: Thêm đơn hàng mới
     public OrderDTO addOrder(OrderDTO orderDTO) {
         Order order = OrderMapper.toEntity(orderDTO);
@@ -87,7 +79,6 @@ public class OrderService {
         }
     }
 
-    // 🔵 Phân trang đơn hàng
     // Phân trang
     public Page<OrderDTO> getOrders(int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size); // page - 1 vì Spring Data bắt đầu từ index 0
@@ -96,21 +87,14 @@ public class OrderService {
         return ordersPage.map(order -> new OrderDTO(
                 order.getOrderID(),
                 order.getCustomer().getCustomerID(), // Lấy customerID
-                order.getStaff().getStaffID(),       // Lấy staffID
+                order.getStaff() != null ? order.getStaff().getStaffID() : null,  // Kiểm tra nếu staff không null
                 order.getOrderDate(),
                 order.getTotalAmount(),
                 order.getStatus()
         ));
-    } // ✅ Đóng ngoặc bị thiếu
-
-    // 🟣 Lấy tất cả đơn hàng có sắp xếp
-    public List<OrderDTO> getAllOrders(String sortBy, String direction) {
-        Sort sort = direction.equalsIgnoreCase("asc")
-                ? Sort.by(sortBy).ascending()
-                : Sort.by(sortBy).descending();
-
     }
-    // Xap xep don hang
+
+    // Sắp xếp đơn hàng
     public List<OrderDTO> getAllOrders (String sortBy, String direction){
         // Kiểm tra direction, nếu không phải "asc" hoặc "desc" mặc định chọn "asc"
         Sort.Direction sortDirection = "desc".equalsIgnoreCase(direction) ? Sort.Direction.DESC : Sort.Direction.ASC;
@@ -122,7 +106,7 @@ public class OrderService {
             .collect(Collectors.toList());
     }
 
-    // 🔴 Xóa đơn hàng
+    // Xóa đơn hàng
     @Transactional
     public void deleteOrderById(Integer id) {
         Optional<Order> orderOptional = orderRepository.findById(id);
@@ -134,15 +118,23 @@ public class OrderService {
             throw new EntityNotFoundException("Order not found with ID: " + id);
         }
     }
-    public List<Order> searchOrders(Integer customerID, LocalDateTime startDate, LocalDateTime endDate, String status) {
-        return orderRepository.findByCustomer_CustomerIDAndOrderDateBetweenAndStatus(customerID, startDate, endDate, status);
-     // Xoa don hang
-    @Transactional
-    public void deleteOrderById (Integer Id){
-        Order order = orderRepository.findById(Id)
-            .orElseThrow(() -> new EntityNotFoundException("Order not found with ID: " + Id));
+    // Tìm đơn hàng
+    public List<OrderDTO> searchOrders(Integer customerID, LocalDateTime startDate, LocalDateTime endDate, String status) {
+        List<Order> orders = orderRepository.findByCustomer_CustomerIDAndOrderDateBetweenAndStatus(customerID, startDate, endDate, status);
 
-        order.getPromotions().clear(); // Xoá liên kết với promotions
-        orderRepository.delete(order); // Xoá order và các liên kết cascade
+        return orders.stream()
+                .map(order -> {
+                    OrderDTO responseDTO = new OrderDTO(
+                            order.getOrderID(),
+                            order.getCustomer().getCustomerID(),  // customerID
+                            order.getStaff() != null ? order.getStaff().getStaffID() : null,  // staffID
+                            order.getOrderDate(),
+                            order.getTotalAmount(),
+                            order.getStatus()
+                    );
+                    return responseDTO;
+                })
+                .collect(Collectors.toList());
     }
+
 }
