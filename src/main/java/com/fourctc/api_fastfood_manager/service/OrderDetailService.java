@@ -3,6 +3,7 @@ package com.fourctc.api_fastfood_manager.service;
 import com.fourctc.api_fastfood_manager.dto.OrderDetailDTO;
 import com.fourctc.api_fastfood_manager.entity.OrderDetail;
 import com.fourctc.api_fastfood_manager.repository.OrderDetailRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,5 +27,23 @@ public class OrderDetailService {
                 orderDetail.getUnitPrice(),
                 orderDetail.getNote()
         )).collect(Collectors.toList());
+    }
+    public void deleteOrderDetailById(Integer id) {
+        if (!orderDetailRepository.existsById(id)) {
+            throw new EntityNotFoundException("OrderDetail not found with ID: " + id);
+        }
+        orderDetailRepository.deleteById(id);
+    }
+
+    public List<OrderDetail> searchByOrderID(Integer orderID) {
+        return orderDetailRepository.findByOrder_OrderID(orderID);
+    }
+
+    public List<OrderDetail> searchByMenuItemID(Integer menuItemID) {
+        return orderDetailRepository.findByMenuItem_MenuItemID(menuItemID);
+    }
+
+    public List<OrderDetail> searchByOrderIDAndMenuItemID(Integer orderID, Integer menuItemID) {
+        return orderDetailRepository.findByOrder_OrderIDAndMenuItem_MenuItemID(orderID, menuItemID);
     }
 }

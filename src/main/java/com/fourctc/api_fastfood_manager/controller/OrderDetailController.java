@@ -1,6 +1,7 @@
 package com.fourctc.api_fastfood_manager.controller;
 
 import com.fourctc.api_fastfood_manager.dto.OrderDetailDTO;
+import com.fourctc.api_fastfood_manager.entity.OrderDetail;
 import com.fourctc.api_fastfood_manager.service.OrderDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -19,5 +20,30 @@ public class OrderDetailController {
     @GetMapping
     public List<OrderDetailDTO> getAllOrderDetails() {
         return orderDetailService.getAllOrderDetails();
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteOrderDetail(@PathVariable Integer id) {
+        try {
+            orderDetailService.deleteOrderDetailById(id);
+            return ResponseEntity.ok("Order detail deleted successfully.");
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/search")
+    public List<OrderDetail> searchOrderDetails(
+            @RequestParam(required = false) Integer orderID,
+            @RequestParam(required = false) Integer menuItemID
+    ) {
+        if (orderID != null && menuItemID != null) {
+            return orderDetailService.searchByOrderIDAndMenuItemID(orderID, menuItemID);
+        } else if (orderID != null) {
+            return orderDetailService.searchByOrderID(orderID);
+        } else if (menuItemID != null) {
+            return orderDetailService.searchByMenuItemID(menuItemID);
+        } else {
+            return List.of(); // Trả về danh sách rỗng nếu không có tham số
+        }
     }
 }
