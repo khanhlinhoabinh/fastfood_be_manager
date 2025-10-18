@@ -10,7 +10,7 @@ public class OrderDTO {
     private Double totalAmount;
     private String status;
 
-    public OrderDTO() {}
+    public OrderDTO(Integer orderID, LocalDateTime orderDate, Double totalAmount, String status) {}
 
     public OrderDTO(Integer orderID, Integer customerID, Integer staffID, LocalDateTime orderDate, Double totalAmount, String status) {
         this.orderID = orderID;
