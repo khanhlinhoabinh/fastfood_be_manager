@@ -1,7 +1,9 @@
 package com.fourctc.api_fastfood_manager.controller;
 
 import com.fourctc.api_fastfood_manager.service.OrderService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.fourctc.api_fastfood_manager.dto.OrderDTO;
@@ -26,6 +28,15 @@ public class OrderController {
     public List<OrderDTO> getAllOrders() {
         return orderService.getAllOrders(); // Trả về danh sách DTO thay vì entity
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteOrder(@PathVariable Integer id) {
+        try {
+            orderService.deleteOrderById(id);
+            return ResponseEntity.ok("Order deleted successfully.");
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     // 🟢 Thêm đơn hàng
     @PostMapping
     public ResponseEntity<OrderDTO> addOrder(@RequestBody OrderDTO orderDTO) {

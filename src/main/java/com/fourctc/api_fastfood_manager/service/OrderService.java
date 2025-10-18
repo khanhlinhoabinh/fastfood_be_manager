@@ -4,8 +4,13 @@ import com.fourctc.api_fastfood_manager.entity.Customer;
 import com.fourctc.api_fastfood_manager.entity.Order;
 import com.fourctc.api_fastfood_manager.repository.CustomerRepository;
 import com.fourctc.api_fastfood_manager.repository.OrderRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
 import com.fourctc.api_fastfood_manager.dto.OrderDTO;
 import com.fourctc.api_fastfood_manager.mapper.OrderMapper;
 import java.util.List;
@@ -89,4 +94,17 @@ public class OrderService {
                 .map(OrderMapper::toDTO)
                 .collect(Collectors.toList());
     }
+
+    @Transactional
+    public void deleteOrderById(Integer id) {
+        Optional<Order> orderOptional = orderRepository.findById(id);
+        if (orderOptional.isPresent()) {
+            Order order = orderOptional.get();
+            order.getPromotions().clear(); // Xoá liên kết với promotions
+            orderRepository.delete(order); // Xoá order và các liên kết cascade
+        } else {
+            throw new EntityNotFoundException("Order not found with ID: " + id);
+        }
+    }
+
 }
