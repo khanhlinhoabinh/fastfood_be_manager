@@ -1,10 +1,12 @@
 package com.fourctc.api_fastfood_manager.controller;
+
 import com.fourctc.api_fastfood_manager.entity.MenuItem;
 import com.fourctc.api_fastfood_manager.service.MenuItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 @RestController
 @RequestMapping("/api/menuitems")
 @CrossOrigin(origins = "*") // Cho phép truy cập từ FE hoặc Postman
@@ -15,7 +17,6 @@ public class MenuItemController {
 
     /**
      * API: Lấy danh sách tất cả món ăn.
-     *
      * GET http://localhost:8080/api/menuitems
      */
     @GetMapping
@@ -37,8 +38,6 @@ public class MenuItemController {
     /**
      * API: Thêm món ăn mới.
      * POST http://localhost:8080/api/menuitems
-     *
-     *
      * Body: JSON chứa thông tin món ăn
      */
     @PostMapping
@@ -56,4 +55,24 @@ public class MenuItemController {
         return menuItemService.updateMenuItem(id, updatedItem);
     }
 
+    // --- CÁC API MỚI BỔ SUNG ---
+
+    /**
+     * 🗑️ API: Xóa món ăn theo ID
+     * DELETE http://localhost:8080/api/menuitems/{id}
+     */
+    @DeleteMapping("/{id}")
+    public String deleteMenuItem(@PathVariable Integer id) {
+        boolean deleted = menuItemService.deleteMenuItem(id);
+        return deleted ? "Xóa món ăn thành công!" : "Không tìm thấy món ăn để xóa.";
+    }
+
+    /**
+     * 🔍 API: Tìm kiếm món ăn theo tên (hoặc một phần tên)
+     * GET http://localhost:8080/api/menuitems/search?keyword=ga
+     */
+    @GetMapping("/search")
+    public List<MenuItem> searchMenuItems(@RequestParam String keyword) {
+        return menuItemService.searchMenuItems(keyword);
+    }
 }

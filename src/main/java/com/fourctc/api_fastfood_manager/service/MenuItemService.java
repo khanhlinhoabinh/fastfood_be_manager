@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
+import java.util.Optional; // Cần thiết cho việc kiểm tra sự tồn tại
+
 @Service
 public class MenuItemService {
     @Autowired
@@ -57,6 +59,43 @@ public class MenuItemService {
         return menuItemRepository.save(existingItem);
     }
 
+    // --- CÁC PHƯƠNG THỨC MỚI BỔ SUNG ---
+
+    /**
+     * Xóa món ăn theo ID.
+     *
+     * @param id ID của món ăn cần xóa.
+     * @return true nếu xóa thành công, false nếu không tìm thấy món ăn.
+     */
+    public boolean deleteMenuItem(Integer id) {
+        // 1. Kiểm tra sự tồn tại
+        if (menuItemRepository.existsById(id)) {
+            // 2. Nếu tồn tại, thực hiện xóa
+            menuItemRepository.deleteById(id);
+            return true;
+        }
+        // 3. Nếu không tìm thấy
+        return false;
+    }
+
+    /**
+     * Tìm kiếm món ăn theo tên (hoặc một phần tên).
+     *
+     * @param keyword Từ khóa tìm kiếm (tên món ăn).
+     * @return Danh sách MenuItem khớp với từ khóa.
+     */
+    public List<MenuItem> searchMenuItems(String keyword) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            // Nếu từ khóa rỗng, trả về tất cả hoặc danh sách rỗng (tùy theo logic nghiệp vụ)
+            // Ở đây, tôi chọn trả về tất cả nếu keyword rỗng
+            return menuItemRepository.findAll();
+        }
+        // Sử dụng phương thức custom từ Repository: findByNameContainingIgnoreCase
+        return menuItemRepository.findByNameContainingIgnoreCase(keyword);
+    }
+
+    // --- PHƯƠNG THỨC HỖ TRỢ ---
+
     // Kiểm tra dữ liệu hợp lệ
     private void validateMenuItem(MenuItem item) {
         if (item.getName() == null || item.getName().trim().isEmpty()) {
@@ -69,7 +108,4 @@ public class MenuItemService {
             throw new IllegalArgumentException("Tồn kho phải ≥ 0");
         }
     }
-
-
-
 }
