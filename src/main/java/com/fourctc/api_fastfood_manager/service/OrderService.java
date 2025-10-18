@@ -10,6 +10,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.fourctc.api_fastfood_manager.dto.OrderDTO;
 import com.fourctc.api_fastfood_manager.mapper.OrderMapper;
+import java.util.List;
+import java.util.Optional;
+import com.fourctc.api_fastfood_manager.dto.OrderDTO;
+import com.fourctc.api_fastfood_manager.mapper.OrderMapper;
+import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +35,7 @@ public class OrderService {
     private CustomerRepository customerRepository; // để map customerID sang entity
 
     // 🟢 Lấy tất cả đơn hàng
+    //Lấy danh sách đơn hàng
     public List<OrderDTO> getAllOrders() {
         return orderRepository.findAll()
                 .stream()
@@ -38,6 +44,7 @@ public class OrderService {
     }
 
     // 🟢 Thêm đơn hàng mới
+    // 🟢 Feature 5: Thêm đơn hàng mới
     public OrderDTO addOrder(OrderDTO orderDTO) {
         Order order = OrderMapper.toEntity(orderDTO);
 
@@ -46,7 +53,13 @@ public class OrderService {
             Optional<Customer> customerOpt = customerRepository.findById(orderDTO.getCustomerID());
             customerOpt.ifPresent(order::setCustomer);
         }
-
+        /*
+        // Lấy thông tin staff từ ID
+        if (orderDTO.getStaffID() != null) {
+            Optional<Staff> staffOpt = staffRepository.findById(orderDTO.getStaffID());  // Bạn cần chắc chắn rằng staffRepository tồn tại và có thể tìm kiếm nhân viên
+            staffOpt.ifPresent(order::setStaff);  // Thiết lập thông tin staff vào order
+        }
+        */
         // Lưu đơn hàng
         Order savedOrder = orderRepository.save(order);
         return OrderMapper.toDTO(savedOrder);
@@ -75,6 +88,7 @@ public class OrderService {
     }
 
     // 🔵 Phân trang đơn hàng
+    // Phân trang
     public Page<OrderDTO> getOrders(int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size); // page - 1 vì Spring Data bắt đầu từ index 0
         Page<Order> ordersPage = orderRepository.findAll(pageable);
@@ -95,10 +109,17 @@ public class OrderService {
                 ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
 
+    }
+    // Xap xep don hang
+    public List<OrderDTO> getAllOrders (String sortBy, String direction){
+        // Kiểm tra direction, nếu không phải "asc" hoặc "desc" mặc định chọn "asc"
+        Sort.Direction sortDirection = "desc".equalsIgnoreCase(direction) ? Sort.Direction.DESC : Sort.Direction.ASC;
+
+        Sort sort = Sort.by(sortDirection, sortBy);
         return orderRepository.findAll(sort)
-                .stream()
-                .map(OrderMapper::toDTO)
-                .collect(Collectors.toList());
+            .stream()
+            .map(OrderMapper::toDTO)
+            .collect(Collectors.toList());
     }
 
     // 🔴 Xóa đơn hàng
@@ -115,5 +136,13 @@ public class OrderService {
     }
     public List<Order> searchOrders(Integer customerID, LocalDateTime startDate, LocalDateTime endDate, String status) {
         return orderRepository.findByCustomer_CustomerIDAndOrderDateBetweenAndStatus(customerID, startDate, endDate, status);
+     // Xoa don hang
+    @Transactional
+    public void deleteOrderById (Integer Id){
+        Order order = orderRepository.findById(Id)
+            .orElseThrow(() -> new EntityNotFoundException("Order not found with ID: " + Id));
+
+        order.getPromotions().clear(); // Xoá liên kết với promotions
+        orderRepository.delete(order); // Xoá order và các liên kết cascade
     }
 }
