@@ -8,19 +8,17 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
 import com.fourctc.api_fastfood_manager.dto.OrderDTO;
 import com.fourctc.api_fastfood_manager.mapper.OrderMapper;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -31,14 +29,15 @@ public class OrderService {
     @Autowired
     private CustomerRepository customerRepository; // để map customerID sang entity
 
-    // OrderService.java
+    // 🟢 Lấy tất cả đơn hàng
     public List<OrderDTO> getAllOrders() {
         return orderRepository.findAll()
                 .stream()
                 .map(OrderMapper::toDTO)
                 .collect(Collectors.toList());
     }
-    // 🟢 Feature 5: Thêm đơn hàng mới
+
+    // 🟢 Thêm đơn hàng mới
     public OrderDTO addOrder(OrderDTO orderDTO) {
         Order order = OrderMapper.toEntity(orderDTO);
 
@@ -53,7 +52,7 @@ public class OrderService {
         return OrderMapper.toDTO(savedOrder);
     }
 
-    // 🟡 Feature 7: Chỉnh sửa thông tin đơn hàng
+    // 🟡 Cập nhật đơn hàng
     public OrderDTO updateOrder(Integer id, OrderDTO orderDTO) {
         Optional<Order> existingOrder = orderRepository.findById(id);
         if (existingOrder.isPresent()) {
@@ -74,37 +73,47 @@ public class OrderService {
             throw new RuntimeException("Không tìm thấy đơn hàng với ID: " + id);
         }
     }
-    // Phân trang
+
+    // 🔵 Phân trang đơn hàng
     public Page<OrderDTO> getOrders(int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size); // page - 1 vì Spring Data bắt đầu từ index 0
         Page<Order> ordersPage = orderRepository.findAll(pageable);
 
         return ordersPage.map(order -> new OrderDTO(
                 order.getOrderID(),
-                order.getCustomer().getCustomerID(), // Lấy thông tin customerID từ Customer entity
-                order.getStaff().getStaffID(), // Lấy thông tin staffID từ Staff entity
+                order.getCustomer().getCustomerID(), // Lấy customerID
+                order.getStaff().getStaffID(),       // Lấy staffID
                 order.getOrderDate(),
                 order.getTotalAmount(),
                 order.getStatus()
         ));
+    } // ✅ Đóng ngoặc bị thiếu
+
+    // 🟣 Lấy tất cả đơn hàng có sắp xếp
     public List<OrderDTO> getAllOrders(String sortBy, String direction) {
-        Sort sort = direction.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Sort sort = direction.equalsIgnoreCase("asc")
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
         return orderRepository.findAll(sort)
                 .stream()
                 .map(OrderMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
+    // 🔴 Xóa đơn hàng
     @Transactional
     public void deleteOrderById(Integer id) {
         Optional<Order> orderOptional = orderRepository.findById(id);
         if (orderOptional.isPresent()) {
             Order order = orderOptional.get();
-            order.getPromotions().clear(); // Xoá liên kết với promotions
-            orderRepository.delete(order); // Xoá order và các liên kết cascade
+            order.getPromotions().clear(); // Xoá liên kết với promotions (nếu có)
+            orderRepository.delete(order); // Xoá order
         } else {
             throw new EntityNotFoundException("Order not found with ID: " + id);
         }
     }
-
+    public List<Order> searchOrders(Integer customerID, LocalDateTime startDate, LocalDateTime endDate, String status) {
+        return orderRepository.findByCustomer_CustomerIDAndOrderDateBetweenAndStatus(customerID, startDate, endDate, status);
+    }
 }

@@ -1,5 +1,6 @@
 package com.fourctc.api_fastfood_manager.controller;
 
+import com.fourctc.api_fastfood_manager.entity.Order;
 import com.fourctc.api_fastfood_manager.service.OrderService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.data.domain.Sort;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -37,6 +39,7 @@ public class OrderController {
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
+    }
     // 🟢 Thêm đơn hàng
     @PostMapping
     public ResponseEntity<OrderDTO> addOrder(@RequestBody OrderDTO orderDTO) {
@@ -62,5 +65,15 @@ public class OrderController {
                                        @RequestParam(defaultValue = "asc") String direction) {
         return orderService.getAllOrders(sortBy, direction);
     }
-
+    @GetMapping("/search")
+    public List<Order> searchOrders(
+            @RequestParam Integer customerID,
+            @RequestParam String startDate,
+            @RequestParam String endDate,
+            @RequestParam String status
+    ) {
+        LocalDateTime start = LocalDateTime.parse(startDate);
+        LocalDateTime end = LocalDateTime.parse(endDate);
+        return orderService.searchOrders(customerID, start, end, status);
+    }
 }
