@@ -11,6 +11,8 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
 
 @Service
 public class OrderService {
@@ -39,5 +41,11 @@ public class OrderService {
                 order.getTotalAmount(),
                 order.getStatus()
         ));
+    public List<OrderDTO> getAllOrders(String sortBy, String direction) {
+        Sort sort = direction.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        return orderRepository.findAll(sort)
+                .stream()
+                .map(OrderMapper::toDTO)
+                .collect(Collectors.toList());
     }
 }
