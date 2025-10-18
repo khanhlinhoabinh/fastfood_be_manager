@@ -20,7 +20,7 @@ public class OrderDetailController {
     public List<OrderDetailDTO> getAllOrderDetails() {
         return orderDetailService.getAllOrderDetails();
     }
-
+    // Sap xep
     @GetMapping("/sort")
     public List<OrderDetailDTO> getAllOrderDetails(
             @RequestParam(defaultValue = "quantity") String sortBy, // Mặc định sắp xếp theo mã món
