@@ -8,6 +8,8 @@ import com.fourctc.api_fastfood_manager.dto.OrderDTO;
 import com.fourctc.api_fastfood_manager.mapper.OrderMapper;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.data.domain.Sort;
+
 
 @Service
 public class OrderService {
@@ -23,5 +25,11 @@ public class OrderService {
                 .collect(Collectors.toList());
     }
 
-
+    public List<OrderDTO> getAllOrders(String sortBy, String direction) {
+        Sort sort = direction.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        return orderRepository.findAll(sort)
+                .stream()
+                .map(OrderMapper::toDTO)
+                .collect(Collectors.toList());
+    }
 }
