@@ -20,6 +20,7 @@ public class CustomerService {
     public List<Customer> getAllCustomers() {
         return customerRepository.findAll();
     }
+
     /**
      * ✅ Hàm 2: Lấy danh sách khách hàng có sắp xếp
      * @param sortBy - trường muốn sắp xếp (name hoặc loyaltyPoints)
@@ -37,6 +38,32 @@ public class CustomerService {
         return customerRepository.findAll(Sort.by(direction, sortBy));
     }
 
+    /**
+     * ✅ Hàm 3: Tìm kiếm khách hàng theo tên, số điện thoại hoặc email
+     * @param keyword - từ khóa tìm kiếm (có thể là 1 phần của name, phone hoặc email)
+     * @return danh sách khách hàng khớp
+     *
+     * Ví dụ:
+     *  🔹 keyword = "nguyen" → tìm tất cả khách hàng có "nguyen" trong tên hoặc email
+     *  🔹 keyword = "090" → tìm tất cả khách hàng có "090" trong số điện thoại
+     */
+    public List<Customer> searchCustomers(String keyword) {
+        return customerRepository.findByNameContainingIgnoreCaseOrPhoneContainingIgnoreCaseOrEmailContainingIgnoreCase(
+                keyword, keyword, keyword
+        );
+    }
+
+    /**
+     * ✅ Hàm 4: Xóa khách hàng theo ID
+     * @param id - ID của khách hàng cần xóa
+     * @return true nếu xóa thành công, false nếu không tìm thấy khách hàng
+     */
+    public boolean deleteCustomer(Integer id) {
+        if (customerRepository.existsById(id)) {
+            customerRepository.deleteById(id);
+            return true;
+        }
+        return false;
     public Customer createCustomer(Customer customer) {
         validateCustomer(customer);
         return customerRepository.save(customer);
