@@ -81,4 +81,27 @@ public class CustomerController {
                     .body("❌ Không tìm thấy khách hàng có ID " + id);
         }
     }
+
+    /**
+     * ✅ API: Thêm khách hàng mới
+     * POST http://localhost:8080/api/customers
+     * Body: JSON chứa thông tin khách hàng
+     */
+    @PostMapping
+    public Customer createCustomer(@RequestBody Customer customer) {
+        return customerService.createCustomer(customer);
+    }
+
+    /**
+     * ✅ API: Chỉnh sửa thông tin khách hàng
+     * PUT http://localhost:8080/api/customers/{id}
+     *
+     *
+     * Body: JSON chứa thông tin cập nhật
+     */
+    @PutMapping("/{id}")
+    public Customer updateCustomer(@PathVariable Integer id, @RequestBody Customer updatedCustomer) {
+        return customerService.updateCustomer(id, updatedCustomer);
+    }
+
 }
