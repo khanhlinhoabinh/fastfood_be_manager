@@ -8,6 +8,9 @@ import com.fourctc.api_fastfood_manager.dto.OrderDTO;
 import com.fourctc.api_fastfood_manager.mapper.OrderMapper;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 
@@ -25,6 +28,19 @@ public class OrderService {
                 .collect(Collectors.toList());
     }
 
+    // Phân trang
+    public Page<OrderDTO> getOrders(int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size); // page - 1 vì Spring Data bắt đầu từ index 0
+        Page<Order> ordersPage = orderRepository.findAll(pageable);
+
+        return ordersPage.map(order -> new OrderDTO(
+                order.getOrderID(),
+                order.getCustomer().getCustomerID(), // Lấy thông tin customerID từ Customer entity
+                order.getStaff().getStaffID(), // Lấy thông tin staffID từ Staff entity
+                order.getOrderDate(),
+                order.getTotalAmount(),
+                order.getStatus()
+        ));
     public List<OrderDTO> getAllOrders(String sortBy, String direction) {
         Sort sort = direction.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         return orderRepository.findAll(sort)

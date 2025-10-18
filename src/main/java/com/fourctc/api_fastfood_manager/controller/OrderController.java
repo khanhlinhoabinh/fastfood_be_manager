@@ -5,6 +5,10 @@ import com.fourctc.api_fastfood_manager.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.fourctc.api_fastfood_manager.dto.OrderDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
@@ -23,6 +27,11 @@ public class OrderController {
         return orderService.getAllOrders(); // Trả về danh sách DTO thay vì entity
     }
 
+    // API phân trang đơn hàng (chỉ hiển thị thông tin đơn hàng mà không bao gồm thông tin khách hàng và nhân viên)
+    @GetMapping("/paged")
+    public Page<OrderDTO> getOrders(@RequestParam("page") int page, @RequestParam("size") int size) {
+        return orderService.getOrders(page, size);
+    }
 
     @GetMapping("/sort")
     public List<OrderDTO> getAllOrders(@RequestParam(defaultValue = "orderDate") String sortBy,
