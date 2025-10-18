@@ -1,16 +1,18 @@
 package com.fourctc.api_fastfood_manager.dto;
 
 import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class OrderDTO {
     private Integer orderID;
     private Integer customerID;
     private Integer staffID;
+
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime orderDate;
+
     private Double totalAmount;
     private String status;
-
-    public OrderDTO(Integer orderID, LocalDateTime orderDate, Double totalAmount, String status) {}
 
     public OrderDTO(Integer orderID, Integer customerID, Integer staffID, LocalDateTime orderDate, Double totalAmount, String status) {
         this.orderID = orderID;
