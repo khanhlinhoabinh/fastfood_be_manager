@@ -1,6 +1,8 @@
 package com.fourctc.api_fastfood_manager.service;
 
+import com.fourctc.api_fastfood_manager.entity.Customer;
 import com.fourctc.api_fastfood_manager.entity.Order;
+import com.fourctc.api_fastfood_manager.repository.CustomerRepository;
 import com.fourctc.api_fastfood_manager.repository.OrderRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import com.fourctc.api_fastfood_manager.dto.OrderDTO;
+import com.fourctc.api_fastfood_manager.mapper.OrderMapper;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
 
 @Service
 public class OrderService {
@@ -16,9 +28,71 @@ public class OrderService {
     @Autowired
     private OrderRepository orderRepository;
 
+    @Autowired
+    private CustomerRepository customerRepository; // để map customerID sang entity
+
     // OrderService.java
-    public List<Order> getAllOrders() {
-        return orderRepository.findAll();  // Lấy tất cả đơn hàng từ DB, sẽ tự động bao gồm cả orderDetails nếu đã được ánh xạ đúng
+    public List<OrderDTO> getAllOrders() {
+        return orderRepository.findAll()
+                .stream()
+                .map(OrderMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+    // 🟢 Feature 5: Thêm đơn hàng mới
+    public OrderDTO addOrder(OrderDTO orderDTO) {
+        Order order = OrderMapper.toEntity(orderDTO);
+
+        // Lấy thông tin customer từ ID
+        if (orderDTO.getCustomerID() != null) {
+            Optional<Customer> customerOpt = customerRepository.findById(orderDTO.getCustomerID());
+            customerOpt.ifPresent(order::setCustomer);
+        }
+
+        // Lưu đơn hàng
+        Order savedOrder = orderRepository.save(order);
+        return OrderMapper.toDTO(savedOrder);
+    }
+
+    // 🟡 Feature 7: Chỉnh sửa thông tin đơn hàng
+    public OrderDTO updateOrder(Integer id, OrderDTO orderDTO) {
+        Optional<Order> existingOrder = orderRepository.findById(id);
+        if (existingOrder.isPresent()) {
+            Order order = existingOrder.get();
+
+            if (orderDTO.getCustomerID() != null) {
+                Optional<Customer> customerOpt = customerRepository.findById(orderDTO.getCustomerID());
+                customerOpt.ifPresent(order::setCustomer);
+            }
+
+            order.setOrderDate(orderDTO.getOrderDate());
+            order.setTotalAmount(orderDTO.getTotalAmount());
+            order.setStatus(orderDTO.getStatus());
+
+            Order updatedOrder = orderRepository.save(order);
+            return OrderMapper.toDTO(updatedOrder);
+        } else {
+            throw new RuntimeException("Không tìm thấy đơn hàng với ID: " + id);
+        }
+    }
+    // Phân trang
+    public Page<OrderDTO> getOrders(int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size); // page - 1 vì Spring Data bắt đầu từ index 0
+        Page<Order> ordersPage = orderRepository.findAll(pageable);
+
+        return ordersPage.map(order -> new OrderDTO(
+                order.getOrderID(),
+                order.getCustomer().getCustomerID(), // Lấy thông tin customerID từ Customer entity
+                order.getStaff().getStaffID(), // Lấy thông tin staffID từ Staff entity
+                order.getOrderDate(),
+                order.getTotalAmount(),
+                order.getStatus()
+        ));
+    public List<OrderDTO> getAllOrders(String sortBy, String direction) {
+        Sort sort = direction.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        return orderRepository.findAll(sort)
+                .stream()
+                .map(OrderMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Transactional

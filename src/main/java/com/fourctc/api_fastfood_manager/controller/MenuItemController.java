@@ -33,4 +33,27 @@ public class MenuItemController {
             @RequestParam(defaultValue = "asc") String order) {
         return menuItemService.getSortedMenuItems(field, order);
     }
+
+    /**
+     * API: Thêm món ăn mới.
+     * POST http://localhost:8080/api/menuitems
+     *
+     *
+     * Body: JSON chứa thông tin món ăn
+     */
+    @PostMapping
+    public MenuItem createMenuItem(@RequestBody MenuItem menuItem) {
+        return menuItemService.createMenuItem(menuItem);
+    }
+
+    /**
+     * API: Chỉnh sửa thông tin món ăn.
+     * PUT http://localhost:8080/api/menuitems/{id}
+     * Body: JSON chứa thông tin món ăn cập nhật
+     */
+    @PutMapping("/{id}")
+    public MenuItem updateMenuItem(@PathVariable Integer id, @RequestBody MenuItem updatedItem) {
+        return menuItemService.updateMenuItem(id, updatedItem);
+    }
+
 }
