@@ -32,7 +32,8 @@ public class OrderDetailController {
     @PutMapping("/{id}")
     public OrderDetailDTO updateOrderDetail(@PathVariable Integer id, @RequestBody OrderDetailDTO dto) {
         return orderDetailService.updateOrderDetail(id, dto);
-    // Sap xep
+        // Sap xep
+    }
     @GetMapping("/sort")
     public List<OrderDetailDTO> getAllOrderDetails(
             @RequestParam(defaultValue = "quantity") String sortBy, // Mặc định sắp xếp theo mã món

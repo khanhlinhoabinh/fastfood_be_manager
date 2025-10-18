@@ -97,6 +97,7 @@ public class OrderDetailService {
                 updated.getUnitPrice(),
                 updated.getNote()
         );
+    }
     // Phương thức lấy tất cả chi tiết đơn hàng với sắp xếp theo mã món hoặc số lượng
     public List<OrderDetailDTO> getAllOrderDetails(String sortBy, String direction) {
         // Kiểm tra direction, nếu không phải "asc" hoặc "desc" mặc định chọn "asc"
