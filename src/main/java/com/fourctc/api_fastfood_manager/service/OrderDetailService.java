@@ -4,6 +4,9 @@ import com.fourctc.api_fastfood_manager.dto.OrderDetailDTO;
 import com.fourctc.api_fastfood_manager.entity.OrderDetail;
 import com.fourctc.api_fastfood_manager.repository.OrderDetailRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -46,5 +49,19 @@ public class OrderDetailService {
                 orderDetail.getUnitPrice(),
                 orderDetail.getNote()
         )).collect(Collectors.toList());
+    }
+    // Phương thức phân trang
+    public Page<OrderDetailDTO> getOrderDetails(int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by("menuItem.menuItemID")); // Sắp xếp theo menuItemID (có thể thay đổi theo yêu cầu)
+        Page<OrderDetail> orderDetailsPage = orderDetailRepository.findAll(pageable);
+
+        return orderDetailsPage.map(orderDetail -> new OrderDetailDTO(
+                orderDetail.getOrderDetailID(),
+                orderDetail.getOrder().getOrderID(),
+                orderDetail.getMenuItem().getMenuItemID(),
+                orderDetail.getQuantity(),
+                orderDetail.getUnitPrice(),
+                orderDetail.getNote()
+        ));
     }
 }
