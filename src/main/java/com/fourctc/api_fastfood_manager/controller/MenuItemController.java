@@ -55,5 +55,23 @@ public class MenuItemController {
     public MenuItem updateMenuItem(@PathVariable Integer id, @RequestBody MenuItem updatedItem) {
         return menuItemService.updateMenuItem(id, updatedItem);
     }
+    /**
+     * 🗑️ API: Xóa món ăn theo ID
+     * DELETE http://localhost:8080/api/menuitems/{id}
+     */
+    @DeleteMapping("/{id}")
+    public String deleteMenuItem(@PathVariable Integer id) {
+        boolean deleted = menuItemService.deleteMenuItem(id);
+        return deleted ? "Xóa món ăn thành công!" : "Không tìm thấy món ăn để xóa.";
+    }
+
+    /**
+     * 🔍 API: Tìm kiếm món ăn theo tên (hoặc một phần tên)
+     * GET http://localhost:8080/api/menuitems/search?keyword=ga
+     */
+    @GetMapping("/search")
+    public List<MenuItem> searchMenuItems(@RequestParam String keyword) {
+        return menuItemService.searchMenuItems(keyword);
+    }
 
 }
