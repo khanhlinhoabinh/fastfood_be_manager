@@ -69,7 +69,36 @@ public class MenuItemService {
             throw new IllegalArgumentException("Tồn kho phải ≥ 0");
         }
     }
+    /**
+     * Xóa món ăn theo ID.
+     *
+     * @param id ID của món ăn cần xóa.
+     * @return true nếu xóa thành công, false nếu không tìm thấy món ăn.
+     */
+    public boolean deleteMenuItem(Integer id) {
+        // 1. Kiểm tra sự tồn tại
+        if (menuItemRepository.existsById(id)) {
+            // 2. Nếu tồn tại, thực hiện xóa
+            menuItemRepository.deleteById(id);
+            return true;
+        }
+        // 3. Nếu không tìm thấy
+        return false;
+    }
 
-
-
+    /**
+     * Tìm kiếm món ăn theo tên (hoặc một phần tên).
+     *
+     * @param keyword Từ khóa tìm kiếm (tên món ăn).
+     * @return Danh sách MenuItem khớp với từ khóa.
+     */
+    public List<MenuItem> searchMenuItems(String keyword) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            // Nếu từ khóa rỗng, trả về tất cả hoặc danh sách rỗng (tùy theo logic nghiệp vụ)
+            // Ở đây, tôi chọn trả về tất cả nếu keyword rỗng
+            return menuItemRepository.findAll();
+        }
+        // Sử dụng phương thức custom từ Repository: findByNameContainingIgnoreCase
+        return menuItemRepository.findByNameContainingIgnoreCase(keyword);
+    }
 }
