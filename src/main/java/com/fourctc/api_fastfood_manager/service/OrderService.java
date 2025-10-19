@@ -81,7 +81,7 @@ public class OrderService {
 
     // Phân trang
     public Page<OrderDTO> getOrders(int page, int size) {
-        Pageable pageable = PageRequest.of(page - 1, size); // page - 1 vì Spring Data bắt đầu từ index 0
+        Pageable pageable = PageRequest.of(page , size); // page - 1 vì Spring Data bắt đầu từ index 0
         Page<Order> ordersPage = orderRepository.findAll(pageable);
 
         return ordersPage.map(order -> new OrderDTO(
