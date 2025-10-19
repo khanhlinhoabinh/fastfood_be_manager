@@ -10,4 +10,6 @@ import java.util.List;
 public interface MenuItemRepository extends JpaRepository<MenuItem, Integer> {
     // JpaRepository đã có sẵn các hàm CRUD: findAll(), findById(), save(), deleteById()
     List<MenuItem> findAll(Sort sort);
+    List<MenuItem> findByNameContainingIgnoreCase(String keyword);
 }
+
