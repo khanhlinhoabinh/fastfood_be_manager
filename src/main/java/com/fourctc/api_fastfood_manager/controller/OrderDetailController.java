@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/order-details")
-@CrossOrigin(origins = "http://localhost:3000") // Cho phép React FE gọi API
+@CrossOrigin(origins = "*") // Cho phép React FE gọi API
 public class OrderDetailController {
 
     @Autowired
