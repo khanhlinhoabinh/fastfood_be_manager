@@ -1,18 +1,13 @@
 package com.fourctc.api_fastfood_manager.controller;
 
-import com.fourctc.api_fastfood_manager.entity.Order;
+import com.fourctc.api_fastfood_manager.dto.OrderDTO;
 import com.fourctc.api_fastfood_manager.service.OrderService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.fourctc.api_fastfood_manager.dto.OrderDTO;
-import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,62 +20,75 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    // Chức năng lấy danh sách
+    // ✅ Lấy toàn bộ đơn hàng (không phân trang)
     @GetMapping
-    public List<OrderDTO> getAllOrders() {
-        return orderService.getAllOrders(); // Trả về danh sách DTO thay vì entity
+    public ResponseEntity<List<OrderDTO>> getAllOrders() {
+        List<OrderDTO> orders = orderService.getAllOrders();
+        return ResponseEntity.ok(orders);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteOrder(@PathVariable Integer id) {
-        try {
-            orderService.deleteOrderById(id);
-            return ResponseEntity.ok("Order deleted successfully.");
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
-
-    // 🟢 Thêm đơn hàng
+    // ✅ Thêm đơn hàng mới
     @PostMapping
     public ResponseEntity<OrderDTO> addOrder(@RequestBody OrderDTO orderDTO) {
         OrderDTO newOrder = orderService.addOrder(orderDTO);
-        return ResponseEntity.ok(newOrder);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newOrder);
     }
 
-    // Cập nhật đơn hàng
+    // ✅ Cập nhật đơn hàng
     @PutMapping("/{id}")
-    public ResponseEntity<OrderDTO> updateOrder(@PathVariable Integer id, @RequestBody OrderDTO orderDTO) {
+    public ResponseEntity<OrderDTO> updateOrder(
+            @PathVariable Integer id,
+            @RequestBody OrderDTO orderDTO) {
         OrderDTO updatedOrder = orderService.updateOrder(id, orderDTO);
         return ResponseEntity.ok(updatedOrder);
     }
 
-    // API phân trang đơn hàng
+    // ✅ Xóa đơn hàng
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteOrder(@PathVariable Integer id) {
+        try {
+            orderService.deleteOrderById(id);
+            return ResponseEntity.ok("Xóa đơn hàng thành công.");
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Không tìm thấy đơn hàng ID: " + id);
+        }
+    }
+
+    // ✅ Lấy danh sách có phân trang + sắp xếp + tìm kiếm keyword
     @GetMapping("/paged")
-    public Page<OrderDTO> getOrders(@RequestParam("page") int page, @RequestParam("size") int size) {
-        return orderService.getOrders(page, size);
+    public ResponseEntity<Page<OrderDTO>> getOrdersPaged(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "orderDate") String sortField,
+            @RequestParam(defaultValue = "desc") String sortDir,
+            @RequestParam(required = false) String keyword
+    ) {
+        Page<OrderDTO> ordersPage = orderService.getOrdersPaged(page, size, sortField, sortDir, keyword);
+        return ResponseEntity.ok(ordersPage);
     }
 
-    //Xắp xếp đơn hàng
+    // ✅ Lấy danh sách có sắp xếp (không phân trang)
     @GetMapping("/sort")
-    public List<OrderDTO> getAllOrders(
+    public ResponseEntity<List<OrderDTO>> getAllOrdersSorted(
             @RequestParam(defaultValue = "orderDate") String sortBy,
-            @RequestParam(defaultValue = "asc") String direction) {
-        return orderService.getAllOrders(sortBy, direction);
+            @RequestParam(defaultValue = "asc") String direction
+    ) {
+        List<OrderDTO> sortedOrders = orderService.getAllOrders(sortBy, direction);
+        return ResponseEntity.ok(sortedOrders);
     }
 
+    // ✅ Tìm kiếm nâng cao theo customerID, khoảng thời gian, status
     @GetMapping("/search")
-    public List<OrderDTO> searchOrders(
+    public ResponseEntity<List<OrderDTO>> searchOrders(
             @RequestParam Integer customerID,
             @RequestParam String startDate,
             @RequestParam String endDate,
-            @RequestParam String status) {
-
+            @RequestParam String status
+    ) {
         LocalDateTime start = LocalDateTime.parse(startDate);
         LocalDateTime end = LocalDateTime.parse(endDate);
-
-        // Gọi phương thức searchOrders và trả về OrderDTO thay vì Order
-        return orderService.searchOrders(customerID, start, end, status);
+        List<OrderDTO> results = orderService.searchOrders(customerID, start, end, status);
+        return ResponseEntity.ok(results);
     }
-
 }
