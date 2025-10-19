@@ -37,8 +37,6 @@ public class MenuItemController {
     /**
      * API: Thêm món ăn mới.
      * POST http://localhost:8080/api/menuitems
-     *
-     *
      * Body: JSON chứa thông tin món ăn
      */
     @PostMapping
