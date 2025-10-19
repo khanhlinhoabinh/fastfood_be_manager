@@ -6,11 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/customers") // ✅ URL gốc cho module Customer
+@CrossOrigin(origins = "*")
 public class CustomerController {
 
     @Autowired
@@ -103,5 +105,15 @@ public class CustomerController {
     public Customer updateCustomer(@PathVariable Integer id, @RequestBody Customer updatedCustomer) {
         return customerService.updateCustomer(id, updatedCustomer);
     }
+    // ✅ API phân trang khách hàng
+    // Ví dụ: GET http://localhost:8080/api/customers/page?page=0&size=10
+    @GetMapping("/page")
+    public Page<Customer> getCustomersPage(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return customerService.getCustomersPage(page, size);
+    }
+
 
 }
