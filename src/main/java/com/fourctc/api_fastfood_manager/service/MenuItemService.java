@@ -5,6 +5,7 @@ import com.fourctc.api_fastfood_manager.repository.MenuItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 
 import java.util.List;
 @Service
@@ -100,5 +101,11 @@ public class MenuItemService {
         }
         // Sử dụng phương thức custom từ Repository: findByNameContainingIgnoreCase
         return menuItemRepository.findByNameContainingIgnoreCase(keyword);
+    }
+
+    // ✅ Phân trang món ăn
+    public Page<MenuItem> getMenuItemsPage(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
+        return menuItemRepository.findAll(pageable);
     }
 }
