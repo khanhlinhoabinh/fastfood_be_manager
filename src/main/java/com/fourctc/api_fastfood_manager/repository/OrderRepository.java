@@ -22,7 +22,18 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 
     List<Order> findByStatus(String status);
 
-    // Tìm kiếm kết hợp
+    List<Order> findByCustomer_CustomerIDAndOrderDateBetween(
+            Integer customerID,
+            LocalDateTime startDate,
+            LocalDateTime endDate
+    );
+
+    List<Order> findByOrderDateBetweenAndStatus(
+            LocalDateTime startDate,
+            LocalDateTime endDate,
+            String status
+    );
+
     List<Order> findByCustomer_CustomerIDAndOrderDateBetweenAndStatus(
             Integer customerID,
             LocalDateTime startDate,

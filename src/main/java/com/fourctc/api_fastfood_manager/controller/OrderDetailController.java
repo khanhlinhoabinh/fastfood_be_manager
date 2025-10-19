@@ -3,14 +3,17 @@ package com.fourctc.api_fastfood_manager.controller;
 import com.fourctc.api_fastfood_manager.dto.OrderDetailDTO;
 import com.fourctc.api_fastfood_manager.entity.OrderDetail;
 import com.fourctc.api_fastfood_manager.service.OrderDetailService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/order-details")
-@CrossOrigin(origins = "http://localhost:3000") // Cho phép React FE gọi API
+@CrossOrigin(origins = "*") // Cho phép React FE gọi API
 public class OrderDetailController {
 
     @Autowired

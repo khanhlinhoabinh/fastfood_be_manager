@@ -19,7 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/orders")
-@CrossOrigin(origins = "http://localhost:3000") // Cho phép React FE gọi API
+@CrossOrigin(origins = "http://localhost:5173") // Cho phép React FE gọi API
 public class OrderController {
 
     @Autowired
@@ -67,13 +67,21 @@ public class OrderController {
     }
     @GetMapping("/search")
     public List<Order> searchOrders(
-            @RequestParam Integer customerID,
-            @RequestParam String startDate,
-            @RequestParam String endDate,
-            @RequestParam String status
+            @RequestParam(required = false) Integer customerID,
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate,
+            @RequestParam(required = false) String status
     ) {
-        LocalDateTime start = LocalDateTime.parse(startDate);
-        LocalDateTime end = LocalDateTime.parse(endDate);
+        LocalDateTime start = (startDate != null && !startDate.isEmpty())
+                ? LocalDateTime.parse(startDate)
+                : LocalDateTime.of(1970, 1, 1, 0, 0);
+
+        LocalDateTime end = (endDate != null && !endDate.isEmpty())
+                ? LocalDateTime.parse(endDate)
+                : LocalDateTime.now();
+
         return orderService.searchOrders(customerID, start, end, status);
     }
+
+
 }

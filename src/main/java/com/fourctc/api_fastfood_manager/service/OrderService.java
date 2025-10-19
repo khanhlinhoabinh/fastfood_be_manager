@@ -114,6 +114,19 @@ public class OrderService {
         }
     }
     public List<Order> searchOrders(Integer customerID, LocalDateTime startDate, LocalDateTime endDate, String status) {
-        return orderRepository.findByCustomer_CustomerIDAndOrderDateBetweenAndStatus(customerID, startDate, endDate, status);
+        if (customerID == null && (status == null || status.isEmpty())) {
+            // chỉ lọc theo ngày
+            return orderRepository.findByOrderDateBetween(startDate, endDate);
+        } else if (customerID != null && (status == null || status.isEmpty())) {
+            // lọc theo KH + ngày
+            return orderRepository.findByCustomer_CustomerIDAndOrderDateBetween(customerID, startDate, endDate);
+        } else if (customerID == null && status != null && !status.isEmpty()) {
+            // lọc theo ngày + trạng thái
+            return orderRepository.findByOrderDateBetweenAndStatus(startDate, endDate, status);
+        } else {
+            // lọc theo KH + ngày + trạng thái
+            return orderRepository.findByCustomer_CustomerIDAndOrderDateBetweenAndStatus(customerID, startDate, endDate, status);
+        }
     }
+
 }
