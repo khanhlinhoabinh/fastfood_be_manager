@@ -3,6 +3,7 @@ import com.fourctc.api_fastfood_manager.entity.MenuItem;
 import com.fourctc.api_fastfood_manager.service.MenuItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 @RestController
@@ -71,5 +72,16 @@ public class MenuItemController {
     public List<MenuItem> searchMenuItems(@RequestParam String keyword) {
         return menuItemService.searchMenuItems(keyword);
     }
+
+    // ✅ API phân trang danh sách món ăn
+    // Ví dụ: GET http://localhost:8080/api/menuitems/page?page=0&size=10
+    @GetMapping("/page")
+    public Page<MenuItem> getMenuItemsPage(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return menuItemService.getMenuItemsPage(page, size);
+    }
+
 
 }
