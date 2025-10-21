@@ -4,6 +4,7 @@ import com.fourctc.api_fastfood_manager.dto.OrderDetailDTO;
 import com.fourctc.api_fastfood_manager.service.OrderDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -48,4 +49,15 @@ public class OrderDetailController {
     ) {
         return orderDetailService.getOrderDetails(page, size);
     }
+    //Xoá
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteOrderDetail(@PathVariable Integer id) {
+        try {
+            orderDetailService.deleteOrderDetail(id);
+            return ResponseEntity.ok("Xóa chi tiết đơn hàng thành công.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        }
+    }
+
 }

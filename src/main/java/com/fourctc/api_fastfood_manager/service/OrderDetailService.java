@@ -131,4 +131,11 @@ public class OrderDetailService {
                 orderDetail.getNote()
         ));
     }
+    // Chức năng xoá
+    public void deleteOrderDetail(Integer id) {
+        if (!orderDetailRepository.existsById(id)) {
+            throw new RuntimeException("Không tìm thấy chi tiết đơn hàng ID: " + id);
+        }
+        orderDetailRepository.deleteById(id);
+    }
 }

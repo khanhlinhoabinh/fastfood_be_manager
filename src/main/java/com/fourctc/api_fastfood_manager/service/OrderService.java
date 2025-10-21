@@ -76,7 +76,6 @@ public class OrderService {
         if (order.getPromotions() != null) {
             order.getPromotions().clear();
         }
-
         orderRepository.delete(order);
     }
 
