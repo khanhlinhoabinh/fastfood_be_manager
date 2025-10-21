@@ -9,9 +9,7 @@ import java.util.List;
 
 public interface OrderDetailRepository extends JpaRepository<OrderDetail, Integer> {
 
-    // 🔍 Tìm chi tiết đơn hàng theo mã đơn
     List<OrderDetail> findByOrder_OrderID(Integer orderID);
-
-    // 🔍 Tìm chi tiết đơn hàng theo mã món
     List<OrderDetail> findByMenuItem_MenuItemID(Integer menuItemID);
+    List<OrderDetail> findByOrder_OrderIDAndMenuItem_MenuItemID(Integer orderID, Integer menuItemID);
 }

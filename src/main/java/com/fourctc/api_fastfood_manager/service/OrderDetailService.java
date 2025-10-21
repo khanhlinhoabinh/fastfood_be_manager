@@ -21,6 +21,17 @@ public class OrderDetailService {
     @Autowired
     private OrderDetailRepository orderDetailRepository;
 
+    private OrderDetailDTO toDTO(OrderDetail orderDetail) {
+        return new OrderDetailDTO(
+                orderDetail.getOrderDetailID(),
+                orderDetail.getOrder().getOrderID(),
+                orderDetail.getMenuItem().getMenuItemID(),
+                orderDetail.getQuantity(),
+                orderDetail.getUnitPrice(),
+                orderDetail.getNote()
+        );
+    }
+
     // Phương thức để lấy tất cả chi tiết đơn hàng và chuyển đổi thành DTO
     public List<OrderDetailDTO> getAllOrderDetails() {
         List<OrderDetail> orderDetails = orderDetailRepository.findAll();
@@ -138,4 +149,23 @@ public class OrderDetailService {
         }
         orderDetailRepository.deleteById(id);
     }
+    // Tìm kiếm chi tiết đơn hàng
+    public List<OrderDetailDTO> searchOrderDetails(Integer orderID, Integer menuItemID) {
+        List<OrderDetail> orderDetails;
+
+        if (orderID != null && menuItemID != null) {
+            orderDetails = orderDetailRepository.findByOrder_OrderIDAndMenuItem_MenuItemID(orderID, menuItemID);
+        } else if (orderID != null) {
+            orderDetails = orderDetailRepository.findByOrder_OrderID(orderID);
+        } else if (menuItemID != null) {
+            orderDetails = orderDetailRepository.findByMenuItem_MenuItemID(menuItemID);
+        } else {
+            orderDetails = orderDetailRepository.findAll();
+        }
+
+        return orderDetails.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+
 }

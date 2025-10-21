@@ -59,5 +59,11 @@ public class OrderDetailController {
             return ResponseEntity.status(404).body(e.getMessage());
         }
     }
+    @GetMapping("/search")
+    public ResponseEntity<List<OrderDetailDTO>> searchOrderDetails(
+            @RequestParam(required = false) Integer orderID,
+            @RequestParam(required = false) Integer menuItemID) {
+        return ResponseEntity.ok(orderDetailService.searchOrderDetails(orderID, menuItemID));
+    }
 
 }

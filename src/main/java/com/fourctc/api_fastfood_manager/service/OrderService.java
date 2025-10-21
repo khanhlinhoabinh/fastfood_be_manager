@@ -1,8 +1,10 @@
 package com.fourctc.api_fastfood_manager.service;
 
 import com.fourctc.api_fastfood_manager.dto.OrderDTO;
+import com.fourctc.api_fastfood_manager.dto.OrderDetailDTO;
 import com.fourctc.api_fastfood_manager.entity.Customer;
 import com.fourctc.api_fastfood_manager.entity.Order;
+import com.fourctc.api_fastfood_manager.entity.OrderDetail;
 import com.fourctc.api_fastfood_manager.mapper.OrderMapper;
 import com.fourctc.api_fastfood_manager.repository.CustomerRepository;
 import com.fourctc.api_fastfood_manager.repository.OrderRepository;
@@ -113,4 +115,6 @@ public class OrderService {
                 .map(OrderMapper::toDTO)
                 .collect(Collectors.toList());
     }
+
+
 }
