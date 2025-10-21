@@ -89,13 +89,9 @@ public class OrderService {
         return orders.stream().map(OrderMapper::toDTO).collect(Collectors.toList());
     }
 
-    // ✅ Lấy danh sách có phân trang + sắp xếp + tìm kiếm keyword
-    public Page<OrderDTO> getOrdersPaged(int page, int size, String sortField, String sortDir, String keyword) {
-        Sort sort = sortDir.equalsIgnoreCase("asc")
-                ? Sort.by(sortField).ascending()
-                : Sort.by(sortField).descending();
-
-        Pageable pageable = PageRequest.of(page, size, sort);
+    // ✅ Lấy danh sách có phân trang + tìm kiếm keyword
+    public Page<OrderDTO> getOrdersPaged(int page, int size, String keyword) {
+        Pageable pageable = PageRequest.of(page, size);
         Page<Order> ordersPage;
 
         if (keyword != null && !keyword.trim().isEmpty()) {
@@ -108,10 +104,10 @@ public class OrderService {
     }
 
     // ✅ Lấy tất cả (sắp xếp theo trường)
-    public List<OrderDTO> getAllOrders(String sortBy, String direction) {
-        Sort.Direction dir = direction.equalsIgnoreCase("desc")
-                ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Sort sort = Sort.by(dir, sortBy);
+    public List<OrderDTO> getAllOrdersSorted(String sortField, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase("asc")
+                ? Sort.by(sortField).ascending()
+                : Sort.by(sortField).descending();
 
         return orderRepository.findAll(sort)
                 .stream()

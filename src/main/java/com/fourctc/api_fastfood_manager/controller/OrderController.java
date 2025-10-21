@@ -20,7 +20,7 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    // ✅ Lấy toàn bộ đơn hàng (không phân trang)
+    // ✅ Lấy toàn bộ đơn hàng (không phân trang, không sắp xếp)
     @GetMapping
     public ResponseEntity<List<OrderDTO>> getAllOrders() {
         List<OrderDTO> orders = orderService.getAllOrders();
@@ -55,26 +55,24 @@ public class OrderController {
         }
     }
 
-    // ✅ Lấy danh sách có phân trang + sắp xếp + tìm kiếm keyword
+    // ✅ Lấy danh sách có phân trang (KHÔNG sắp xếp)
     @GetMapping("/paged")
     public ResponseEntity<Page<OrderDTO>> getOrdersPaged(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "orderDate") String sortField,
-            @RequestParam(defaultValue = "desc") String sortDir,
             @RequestParam(required = false) String keyword
     ) {
-        Page<OrderDTO> ordersPage = orderService.getOrdersPaged(page, size, sortField, sortDir, keyword);
+        Page<OrderDTO> ordersPage = orderService.getOrdersPaged(page, size, keyword);
         return ResponseEntity.ok(ordersPage);
     }
 
-    // ✅ Lấy danh sách có sắp xếp (không phân trang)
+    // ✅ Lấy danh sách có sắp xếp (KHÔNG phân trang)
     @GetMapping("/sort")
     public ResponseEntity<List<OrderDTO>> getAllOrdersSorted(
             @RequestParam(defaultValue = "orderDate") String sortBy,
             @RequestParam(defaultValue = "asc") String direction
     ) {
-        List<OrderDTO> sortedOrders = orderService.getAllOrders(sortBy, direction);
+        List<OrderDTO> sortedOrders = orderService.getAllOrdersSorted(sortBy, direction);
         return ResponseEntity.ok(sortedOrders);
     }
 
