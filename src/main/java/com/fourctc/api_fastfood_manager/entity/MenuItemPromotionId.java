@@ -1,3 +1,4 @@
+package com.fourctc.api_fastfood_manager.entity;
 import jakarta.persistence.Embeddable;
 import java.io.Serializable;
 
