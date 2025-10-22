@@ -47,4 +47,12 @@ public class PromotionService {
         }
         promotionRepository.deleteById(id);
     }
+    // 🔍 Tìm kiếm khuyến mãi theo tên hoặc loại
+    public List<Promotion> searchPromotions(String keyword) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            // Nếu không nhập gì thì trả toàn bộ danh sách
+            return promotionRepository.findAll(Sort.by(Sort.Direction.ASC, "name"));
+        }
+        return promotionRepository.findByNameContainingIgnoreCaseOrTypeContainingIgnoreCase(keyword, keyword);
+    }
 }

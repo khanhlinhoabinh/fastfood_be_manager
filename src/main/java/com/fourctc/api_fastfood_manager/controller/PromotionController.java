@@ -36,5 +36,10 @@ public class PromotionController {
         promotionService.deletePromotion(id);
         return "🗑️ Đã xóa khuyến mãi có ID: " + id;
     }
+    // 🔍 API: Tìm kiếm khuyến mãi theo tên hoặc loại
+    @GetMapping("/search")
+    public List<Promotion> searchPromotions(@RequestParam(required = false) String keyword) {
+        return promotionService.searchPromotions(keyword);
+    }
 
 }
