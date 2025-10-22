@@ -1,52 +1,54 @@
 package com.fourctc.api_fastfood_manager.entity;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+
 import java.io.Serializable;
+import java.util.Objects;
 
 @Embeddable
 public class MenuItemPromotionId implements Serializable {
 
-    private Integer menuitemid;
-    private Integer promotionid;
+    @Column(name = "MenuItemID") // ✅ khớp với ánh xạ trong MenuItem
+    private Integer menuItemId;
 
-    // Constructors, getters, setters, equals, hashCode
+    @Column(name = "PromotionID")
+    private Integer promotionId;
+
     public MenuItemPromotionId() {}
 
-    public MenuItemPromotionId(Integer menuitemid, Integer promotionid) {
-        this.menuitemid = menuitemid;
-        this.promotionid = promotionid;
+    public MenuItemPromotionId(Integer menuItemId, Integer promotionId) {
+        this.menuItemId = menuItemId;
+        this.promotionId = promotionId;
     }
 
-    public Integer getMenuitemid() {
-        return menuitemid;
+    public Integer getMenuItemId() {
+        return menuItemId;
     }
 
-    public void setMenuitemid(Integer menuitemid) {
-        this.menuitemid = menuitemid;
+    public void setMenuItemId(Integer menuItemId) {
+        this.menuItemId = menuItemId;
     }
 
-    public Integer getPromotionid() {
-        return promotionid;
+    public Integer getPromotionId() {
+        return promotionId;
     }
 
-    public void setPromotionid(Integer promotionid) {
-        this.promotionid = promotionid;
+    public void setPromotionId(Integer promotionId) {
+        this.promotionId = promotionId;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (!(o instanceof MenuItemPromotionId)) return false;
         MenuItemPromotionId that = (MenuItemPromotionId) o;
-
-        if (!menuitemid.equals(that.menuitemid)) return false;
-        return promotionid.equals(that.promotionid);
+        return Objects.equals(menuItemId, that.menuItemId) &&
+                Objects.equals(promotionId, that.promotionId);
     }
 
     @Override
     public int hashCode() {
-        int result = menuitemid.hashCode();
-        result = 31 * result + promotionid.hashCode();
-        return result;
+        return Objects.hash(menuItemId, promotionId);
     }
 }
