@@ -1,22 +1,43 @@
 package com.fourctc.api_fastfood_manager.entity;
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+
+import jakarta.persistence.*;
 
 @Entity
-@Table(name = "menu_item_promotion")
+@Table(name = "MenuItemPromotion") // ✅ khớp với tên bảng trong MenuItem
 public class MenuItemPromotion {
 
     @EmbeddedId
     private MenuItemPromotionId id;
 
-    // Getters and Setters
+    @ManyToOne
+    @JoinColumn(name = "MenuItemID", insertable = false, updatable = false)
+    private MenuItem menuItem;
+
+    @ManyToOne
+    @JoinColumn(name = "PromotionID", insertable = false, updatable = false)
+    private Promotion promotion;
+
     public MenuItemPromotionId getId() {
         return id;
     }
 
     public void setId(MenuItemPromotionId id) {
         this.id = id;
+    }
+
+    public MenuItem getMenuItem() {
+        return menuItem;
+    }
+
+    public void setMenuItem(MenuItem menuItem) {
+        this.menuItem = menuItem;
+    }
+
+    public Promotion getPromotion() {
+        return promotion;
+    }
+
+    public void setPromotion(Promotion promotion) {
+        this.promotion = promotion;
     }
 }
