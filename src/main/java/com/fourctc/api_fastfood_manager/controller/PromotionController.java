@@ -1,0 +1,18 @@
+package com.fourctc.api_fastfood_manager.controller;
+
+import com.fourctc.api_fastfood_manager.entity.Promotion;
+import com.fourctc.api_fastfood_manager.service.PromotionService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/promotions")
+@CrossOrigin(origins = "*")
+public class PromotionController {
+
+    @Autowired
+    private PromotionService promotionService;
+
+
+}
