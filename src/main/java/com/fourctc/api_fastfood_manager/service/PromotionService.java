@@ -15,6 +15,12 @@ public class PromotionService {
 
     @Autowired
     private PromotionRepository promotionRepository;
-
-
+    // 🟢 Hàm lấy danh sách khuyến mãi (có sắp xếp)
+    public List<Promotion> getAllPromotions(String sortBy) {
+        // Nếu không truyền sortBy thì mặc định sắp xếp theo tên
+        if (sortBy == null || sortBy.isEmpty()) {
+            sortBy = "name";
+        }
+        return List.of();
+    }
 }

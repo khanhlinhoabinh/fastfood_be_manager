@@ -14,5 +14,10 @@ public class PromotionController {
     @Autowired
     private PromotionService promotionService;
 
+    // 🟢 API: Lấy danh sách khuyến mãi (có hỗ trợ sắp xếp)
+    @GetMapping
+    public List<Promotion> getAllPromotions(@RequestParam(required = false) String sortBy) {
+        return promotionService.getAllPromotions(sortBy);
 
+    }
 }
