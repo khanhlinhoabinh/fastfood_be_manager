@@ -6,6 +6,7 @@ import com.fourctc.api_fastfood_manager.entity.Payment;
 import com.fourctc.api_fastfood_manager.repository.OrderRepository;
 import com.fourctc.api_fastfood_manager.repository.PaymentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +44,14 @@ public class PaymentService {
         }
         Sort.Direction direction = "desc".equalsIgnoreCase(order) ? Sort.Direction.DESC : Sort.Direction.ASC;
         return paymentRepository.findAll(Sort.by(direction, sortBy));
+    }
+    /**
+     * ✅ Phân trang danh sách thanh toán
+     * Ví dụ: GET /api/payments/page?page=0&size=10
+     */
+    public Page<Payment> getPaymentsPage(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("paymentDate").descending());
+        return paymentRepository.findAll(pageable);
     }
 
     /**
