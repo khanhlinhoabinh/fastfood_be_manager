@@ -28,4 +28,16 @@ public class PromotionService {
     public Promotion addPromotion(Promotion promotion) {
         return promotionRepository.save(promotion);
     }
+    // 🟠 Cập nhật thông tin khuyến mãi
+    public Promotion updatePromotion(Integer id, Promotion updatedPromotion) {
+        return promotionRepository.findById(id)
+                .map(promotion -> {
+                    promotion.setName(updatedPromotion.getName());
+                    promotion.setType(updatedPromotion.getType());
+                    promotion.setDiscountPercent(updatedPromotion.getDiscountPercent());
+                    promotion.setExpiryDate(updatedPromotion.getExpiryDate());
+                    return promotionRepository.save(promotion);
+                })
+                .orElseThrow(() -> new RuntimeException("❌ Không tìm thấy khuyến mãi có ID: " + id));
+    }
 }

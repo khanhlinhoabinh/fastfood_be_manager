@@ -25,4 +25,11 @@ public class PromotionController {
     public Promotion addPromotion(@RequestBody Promotion promotion) {
         return promotionService.addPromotion(promotion);
     }
+    // 🟠 API: Cập nhật khuyến mãi theo ID
+    @PutMapping("/{id}")
+    public Promotion updatePromotion(@PathVariable Integer id, @RequestBody Promotion promotion) {
+        return promotionService.updatePromotion(id, promotion);
+    }
+
+
 }
