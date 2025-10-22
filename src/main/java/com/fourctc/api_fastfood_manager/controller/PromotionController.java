@@ -20,4 +20,9 @@ public class PromotionController {
         return promotionService.getAllPromotions(sortBy);
 
     }
+    // 🟡 API: Thêm khuyến mãi mới
+    @PostMapping
+    public Promotion addPromotion(@RequestBody Promotion promotion) {
+        return promotionService.addPromotion(promotion);
+    }
 }

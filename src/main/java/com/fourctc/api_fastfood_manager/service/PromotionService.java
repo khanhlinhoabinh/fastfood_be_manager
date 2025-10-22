@@ -21,6 +21,11 @@ public class PromotionService {
         if (sortBy == null || sortBy.isEmpty()) {
             sortBy = "name";
         }
-        return List.of();
+// Trả về danh sách khuyến mãi đã sắp xếp theo cột chỉ định
+        return promotionRepository.findAll(Sort.by(Sort.Direction.ASC, sortBy));
+    }
+    // 🟡 Hàm thêm khuyến mãi mới (Feature 3)
+    public Promotion addPromotion(Promotion promotion) {
+        return promotionRepository.save(promotion);
     }
 }
