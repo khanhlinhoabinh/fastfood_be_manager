@@ -5,6 +5,8 @@ import com.fourctc.api_fastfood_manager.entity.Payment;
 import com.fourctc.api_fastfood_manager.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+
 
 import java.util.List;
 
@@ -134,4 +136,20 @@ public class PaymentController {
     public void deletePayment(@PathVariable Integer id) {
         paymentService.deletePayment(id);
     }
+
+    /**
+     * ✅ API 7: Phân trang thanh toán
+     * URL: GET http://localhost:8080/api/payments/page?page=0&size=10
+     */
+    @GetMapping("/page")
+    public Page<Payment> getPaymentsPage(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return paymentService.getPaymentsPage(page, size);
+    }
+
+    /**
+     * ✅ API 4: Tìm kiếm thanh toán
+     */
 }
