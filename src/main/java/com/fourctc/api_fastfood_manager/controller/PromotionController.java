@@ -30,6 +30,11 @@ public class PromotionController {
     public Promotion updatePromotion(@PathVariable Integer id, @RequestBody Promotion promotion) {
         return promotionService.updatePromotion(id, promotion);
     }
-
+    // 🔴 API: Xóa khuyến mãi theo ID
+    @DeleteMapping("/{id}")
+    public String deletePromotion(@PathVariable Integer id) {
+        promotionService.deletePromotion(id);
+        return "🗑️ Đã xóa khuyến mãi có ID: " + id;
+    }
 
 }

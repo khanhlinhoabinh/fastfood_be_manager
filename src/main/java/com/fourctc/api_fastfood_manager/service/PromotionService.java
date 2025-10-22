@@ -40,4 +40,11 @@ public class PromotionService {
                 })
                 .orElseThrow(() -> new RuntimeException("❌ Không tìm thấy khuyến mãi có ID: " + id));
     }
+    // 🔴 Xóa khuyến mãi theo ID
+    public void deletePromotion(Integer id) {
+        if (!promotionRepository.existsById(id)) {
+            throw new RuntimeException("❌ Không tìm thấy khuyến mãi có ID: " + id);
+        }
+        promotionRepository.deleteById(id);
+    }
 }
