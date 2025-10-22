@@ -1,3 +1,4 @@
+package com.fourctc.api_fastfood_manager.entity;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
