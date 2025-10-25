@@ -4,43 +4,37 @@ import com.fourctc.api_fastfood_manager.dto.OrderDTO;
 import com.fourctc.api_fastfood_manager.service.OrderService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/orders")
-@CrossOrigin(origins = "*") // Cho phép React FE gọi API
+@CrossOrigin(origins = "*") // Cho phép FE React gọi API
 public class OrderController {
 
     @Autowired
     private OrderService orderService;
 
-    // ✅ Lấy toàn bộ đơn hàng (không phân trang, không sắp xếp)
+    // ✅ Lấy toàn bộ đơn hàng
     @GetMapping
     public ResponseEntity<List<OrderDTO>> getAllOrders() {
-        List<OrderDTO> orders = orderService.getAllOrders();
-        return ResponseEntity.ok(orders);
+        return ResponseEntity.ok(orderService.getAllOrders());
     }
 
     // ✅ Thêm đơn hàng mới
     @PostMapping
     public ResponseEntity<OrderDTO> addOrder(@RequestBody OrderDTO orderDTO) {
-        OrderDTO newOrder = orderService.addOrder(orderDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newOrder);
+        return ResponseEntity.status(HttpStatus.CREATED).body(orderService.addOrder(orderDTO));
     }
 
     // ✅ Cập nhật đơn hàng
     @PutMapping("/{id}")
-    public ResponseEntity<OrderDTO> updateOrder(
-            @PathVariable Integer id,
-            @RequestBody OrderDTO orderDTO) {
-        OrderDTO updatedOrder = orderService.updateOrder(id, orderDTO);
-        return ResponseEntity.ok(updatedOrder);
+    public ResponseEntity<OrderDTO> updateOrder(@PathVariable Integer id, @RequestBody OrderDTO orderDTO) {
+        return ResponseEntity.ok(orderService.updateOrder(id, orderDTO));
     }
 
     // ✅ Xóa đơn hàng
@@ -55,38 +49,34 @@ public class OrderController {
         }
     }
 
-    // ✅ Lấy danh sách có phân trang (KHÔNG sắp xếp)
-    @GetMapping("/paged")
-    public ResponseEntity<Page<OrderDTO>> getOrdersPaged(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = false) String keyword
-    ) {
-        Page<OrderDTO> ordersPage = orderService.getOrdersPaged(page, size, keyword);
-        return ResponseEntity.ok(ordersPage);
-    }
-
-    // ✅ Lấy danh sách có sắp xếp (KHÔNG phân trang)
+    // ✅ Sắp xếp đơn hàng
     @GetMapping("/sort")
     public ResponseEntity<List<OrderDTO>> getAllOrdersSorted(
             @RequestParam(defaultValue = "orderDate") String sortBy,
             @RequestParam(defaultValue = "asc") String direction
     ) {
-        List<OrderDTO> sortedOrders = orderService.getAllOrdersSorted(sortBy, direction);
-        return ResponseEntity.ok(sortedOrders);
+        return ResponseEntity.ok(orderService.getAllOrdersSorted(sortBy, direction));
     }
 
-    // ✅ Tìm kiếm nâng cao theo customerID, khoảng thời gian, status
+    // ✅ TÌM KIẾM ĐƠN GIẢN (CustomerID + Status)
     @GetMapping("/search")
     public ResponseEntity<List<OrderDTO>> searchOrders(
-            @RequestParam Integer customerID,
-            @RequestParam String startDate,
-            @RequestParam String endDate,
-            @RequestParam String status
+            @RequestParam(required = false) Integer customerID,
+            @RequestParam(required = false) String status
     ) {
-        LocalDateTime start = LocalDateTime.parse(startDate);
-        LocalDateTime end = LocalDateTime.parse(endDate);
-        List<OrderDTO> results = orderService.searchOrders(customerID, start, end, status);
-        return ResponseEntity.ok(results);
+        return ResponseEntity.ok(orderService.searchOrdersSimple(customerID, status));
     }
+    // ✅ Phân trang danh sách đơn hàng
+    @GetMapping("/paged")
+    public ResponseEntity<Page<OrderDTO>> getOrdersPaged(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "orderDate") String sortBy,
+            @RequestParam(defaultValue = "desc") String direction) {
+
+        Page<OrderDTO> orders = orderService.getOrdersPaged(page, size, sortBy, direction);
+        return ResponseEntity.ok(orders);
+    }
+
+
 }
