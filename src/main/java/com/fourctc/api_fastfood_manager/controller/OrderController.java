@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -58,13 +60,23 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getAllOrdersSorted(sortBy, direction));
     }
 
-    // ✅ TÌM KIẾM ĐƠN GIẢN (CustomerID + Status)
+    // ✅ TÌM KIẾM
     @GetMapping("/search")
     public ResponseEntity<List<OrderDTO>> searchOrders(
             @RequestParam(required = false) Integer customerID,
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate,
             @RequestParam(required = false) String status
     ) {
-        return ResponseEntity.ok(orderService.searchOrdersSimple(customerID, status));
+        LocalDateTime start = (startDate != null && !startDate.isBlank())
+                ? LocalDate.parse(startDate).atStartOfDay()
+                : null;
+
+        LocalDateTime end = (endDate != null && !endDate.isBlank())
+                ? LocalDate.parse(endDate).atTime(23, 59, 59)
+                : null;
+        List<OrderDTO> results = orderService.searchOrders(customerID, start, end, status);
+        return ResponseEntity.ok(results);
     }
     // ✅ Phân trang danh sách đơn hàng
     @GetMapping("/paged")

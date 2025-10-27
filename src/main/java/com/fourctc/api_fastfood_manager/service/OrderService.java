@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
+import java.time.LocalDateTime;
 
 
 import java.util.List;
@@ -97,21 +98,52 @@ public class OrderService {
                 .collect(Collectors.toList());
     }
 
-    public List<OrderDTO> searchOrdersSimple(Integer customerID, String status) {
+    public List<OrderDTO> searchOrders(Integer customerID, LocalDateTime startDate, LocalDateTime endDate, String status) {
         List<Order> orders;
 
-        if (customerID != null && status != null && !status.isBlank()) {
+        boolean hasCustomerID = customerID != null;
+        boolean hasStartDate = startDate != null;
+        boolean hasEndDate = endDate != null;
+        boolean hasStatus = status != null && !status.isBlank();
+
+        // Trường hợp đầy đủ: customerID + status + khoảng thời gian
+        if (hasCustomerID && hasStartDate && hasEndDate && hasStatus) {
+            orders = orderRepository.findByCustomerIDAndStatusAndOrderDateBetween(customerID, startDate, endDate, status);
+        }
+        // customerID + status
+        else if (hasCustomerID && hasStatus) {
             orders = orderRepository.findByCustomerIDAndStatus(customerID, status);
-        } else if (customerID != null) {
+        }
+        // customerID + khoảng thời gian
+        else if (hasCustomerID && hasStartDate && hasEndDate) {
+            orders = orderRepository.findByCustomerIDAndOrderDateBetween(customerID, startDate, endDate);
+        }
+        // status + khoảng thời gian
+        else if (hasStatus && hasStartDate && hasEndDate) {
+            orders = orderRepository.findByStatusAndOrderDateBetween(status, startDate, endDate);
+        }
+        // chỉ customerID
+        else if (hasCustomerID) {
             orders = orderRepository.findByCustomerID(customerID);
-        } else if (status != null && !status.isBlank()) {
+        }
+        // chỉ status
+        else if (hasStatus) {
             orders = orderRepository.findByStatus(status);
-        } else {
+        }
+        // chỉ khoảng thời gian
+        else if (hasStartDate && hasEndDate) {
+            orders = orderRepository.findByOrderDateBetween(startDate, endDate);
+        }
+        // không có điều kiện nào
+        else {
             orders = orderRepository.findAll();
         }
 
-        return orders.stream().map(OrderMapper::toDTO).collect(Collectors.toList());
+        return orders.stream()
+                .map(OrderMapper::toDTO)
+                .collect(Collectors.toList());
     }
+
     public Page<OrderDTO> getOrdersPaged(int page, int size, String sortField, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase("asc")
                 ? Sort.by(sortField).ascending()
